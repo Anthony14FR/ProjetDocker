@@ -1,0 +1,43 @@
+version: '3'
+services:
+  nginx1:
+    image: nginx:latest
+    ports:
+      - 8081:80
+    # volumes:
+    #   - ./nginx1.conf:/etc/nginx/nginx.conf
+    #   - ./nginx1:/var/www/html
+    restart: always
+
+  nginx2:
+    image: nginx:latest
+    ports:
+      - 8082:80
+    # volumes:
+      # - ./nginx2.conf:/etc/nginx/nginx.conf
+    #   - ./nginx2:/var/www/html
+    restart: always
+
+  php1:
+    build: Docker
+    volumes:
+      - .:/var/www/html
+
+  php2:
+    build: Docker
+    volumes:
+      - .:/var/www/html
+
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+
+volumes:
+  mysql:

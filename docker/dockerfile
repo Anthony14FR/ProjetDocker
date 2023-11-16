@@ -1,0 +1,29 @@
+FROM php:8.2-fpm
+
+# Installer les dépendances nécessaires pour Laravel
+RUN apt-get update && apt-get install -y libpng-dev libonig-dev libxml2-dev zip unzip git curl
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
+
+# Installer Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Installer Node.js pour npm
+RUN apt-get install -y nodejs
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Copier les fichiers du projet
+COPY . /var/www/html
+
+# Définir le répertoire de travail
+WORKDIR /var/www/html
+
+# # Exécuter les commandes Laravel
+# RUN composer install
+# RUN npm install
+# RUN npm run build
+# RUN php artisan key:generate
+# RUN php artisan migrate:fresh --seed
+
+# Exposer le port
+EXPOSE 9000
