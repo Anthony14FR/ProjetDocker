@@ -1,0 +1,40 @@
+# Dockerfile - PHP
+FROM php:8.1.0-fpm
+
+# Installer les dépendances PHP
+RUN docker-php-ext-install pdo pdo_mysql
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# Installer l'extension zip et Git
+RUN apt-get update && \
+    apt-get install -y \
+    libzip-dev \
+    zip \
+    unzip \
+    git \
+    gunzip && \
+    docker-php-ext-install zip
+
+# Copier les sources de l'application
+COPY . /var/www/html
+
+# Définir le répertoire de travail
+WORKDIR /var/www/html
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN docker-php-ext-install pdo pdo_mysql && docker-php-ext-enable pdo_mysql
+
+# Exposer le port
+EXPOSE 9000
+
+
+# Exécuter Composer et NPM
+RUN composer install
+
+# Générer la clé d'application
+RUN php artisan key:generate
+
+# Exécuter les migrations et les seeders
+# RUN php artisan migrate:fresh --seed
