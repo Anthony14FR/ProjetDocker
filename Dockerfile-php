@@ -13,8 +13,7 @@ RUN apt-get update && \
     zip \
     unzip \
     git \
-    gunzip && \
-    docker-php-ext-install zip
+    && docker-php-ext-install zip
 
 # Copier les sources de l'application
 COPY . /var/www/html
@@ -22,19 +21,26 @@ COPY . /var/www/html
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
+# Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-RUN docker-php-ext-install pdo pdo_mysql && docker-php-ext-enable pdo_mysql
+# Exécuter Composer pour installer les dépendances
+RUN composer install
+
+# Générer la clé d'application Laravel
+RUN php artisan key:generate
 
 # Exposer le port
 EXPOSE 9000
 
+# Commande par défaut
+CMD ["php-fpm"]
 
-# Exécuter Composer et NPM
-RUN composer install
+# Copier le script et le rendre exécutable
+COPY start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
 
-# Générer la clé d'application
-RUN php artisan key:generate
+# Définir le script comme point d'entrée
+ENTRYPOINT ["start.sh"]
 
-# Exécuter les migrations et les seeders
-# RUN php artisan migrate:fresh --seed
+

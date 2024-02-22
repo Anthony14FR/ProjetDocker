@@ -1,20 +1,18 @@
-# Étape 1: Utiliser une image Node.js officielle comme base
 FROM node:latest
 
-# Étape 2: Définir le répertoire de travail dans le conteneur
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Étape 3: Copier les fichiers de package.json et package-lock.json (si disponible) dans le conteneur
+# Copier les fichiers package.json et package-lock.json
 COPY package*.json ./
 
-# Étape 4: Installer les dépendances du projet
+# Installer toutes les dépendances
 RUN npm install
 
-# Étape 5: Copier le reste des fichiers du projet dans le conteneur
+# Copier le reste des fichiers de l'application
 COPY . .
 
-# Étape 6: Construire l'application
-RUN npm run build
+ENV PATH /app/node_modules/.bin:$PATH
 
-# Étape 7: Exécuter l'application en mode développement
-CMD ["npm", "run", "dev"]
+# Exposer le port utilisé par Vite (si différent de celui par défaut)
+EXPOSE 5173

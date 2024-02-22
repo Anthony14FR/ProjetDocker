@@ -105,12 +105,12 @@
                                 <div class="ml-4 text-lg leading-7 font-semibold text-gray-900 dark:text-white">
                                     <?php
                                     switch ($_SERVER['SERVER_NAME']) {
-                                        case "server1":
+                                        case "serveur1":
                                             ?>
                                             <p>Vous êtes actuellement sur le serveur 1</p>
                                             <?php
                                             break;
-                                        case 'server2':
+                                        case 'serveur2':
                                             ?>
                                             <p>Vous êtes actuellement sur le serveur 2</p>
                                             <?php
