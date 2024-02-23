@@ -1,46 +1,33 @@
-# Dockerfile - PHP
 FROM php:8.1.0-fpm
 
-# Installer les dépendances PHP
 RUN docker-php-ext-install pdo pdo_mysql
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# Installer l'extension zip et Git
 RUN apt-get update && \
     apt-get install -y \
     libzip-dev \
     zip \
+    netcat-openbsd \
     unzip \
     git \
     && docker-php-ext-install zip
 
-# Copier les sources de l'application
 COPY . /var/www/html
 
-# Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Exécuter Composer pour installer les dépendances
-RUN composer install
-
-# Générer la clé d'application Laravel
 RUN php artisan key:generate
 
-# Exposer le port
 EXPOSE 9000
 
-# Commande par défaut
 CMD ["php-fpm"]
 
-# Copier le script et le rendre exécutable
 COPY start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh
 
-# Définir le script comme point d'entrée
+RUN composer install
+
 ENTRYPOINT ["start.sh"]
-
-

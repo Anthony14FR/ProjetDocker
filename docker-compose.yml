@@ -61,9 +61,10 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile-npm
+      args:
+        - PORT=5173
     volumes:
       - .:/app
-    command: npm run dev
     networks:
       - laravel
     restart: always
@@ -76,14 +77,15 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile-npm
+      args:
+        - PORT=5174
     volumes:
       - .:/app
-    command: npm run dev
     networks:
       - laravel
     restart: always
     ports:
-      - "5174:5173"
+      - "5174:5174"
     depends_on:
       - php2
 
